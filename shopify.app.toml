@@ -1,0 +1,36 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "e21b32a07c8393af3e5b240199de5a8f"
+name = "Wishlist Eglobe App"
+handle = "wishlist-eglobe-app"
+application_url = "https://modes-methods-kai-handed.trycloudflare.com"
+embedded = true
+
+[build]
+include_config_on_deploy = true
+automatically_update_urls_on_dev = true
+
+[webhooks]
+api_version = "2025-04"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/webhooks/app/uninstalled"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/scopes_update" ]
+  uri = "/webhooks/app/scopes_update"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = [
+  "https://modes-methods-kai-handed.trycloudflare.com/auth/callback",
+  "https://modes-methods-kai-handed.trycloudflare.com/auth/shopify/callback",
+  "https://modes-methods-kai-handed.trycloudflare.com/api/auth/callback"
+]
+
+[pos]
+embedded = false
