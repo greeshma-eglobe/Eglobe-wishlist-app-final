@@ -3,7 +3,7 @@
 client_id = "e21b32a07c8393af3e5b240199de5a8f"
 name = "Wishlist Eglobe App"
 handle = "wishlist-eglobe-app"
-application_url = "https://modes-methods-kai-handed.trycloudflare.com"
+application_url = "https://eglobe-wishlist-app.onrender.com"
 embedded = true
 
 [build]
@@ -23,13 +23,13 @@ api_version = "2025-04"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products"
+scopes = "write_products, read_products, unauthenticated_read_product_tags, unauthenticated_read_customers, unauthenticated_read_product_listings"
 
 [auth]
 redirect_urls = [
-  "https://modes-methods-kai-handed.trycloudflare.com/auth/callback",
-  "https://modes-methods-kai-handed.trycloudflare.com/auth/shopify/callback",
-  "https://modes-methods-kai-handed.trycloudflare.com/api/auth/callback"
+  "https://eglobe-wishlist-app.onrender.com/auth/callback",
+  "https://eglobe-wishlist-app.onrender.com/auth/shopify/callback",
+  "https://eglobe-wishlist-app.onrender.com/api/auth/callback"
 ]
 
 [pos]
