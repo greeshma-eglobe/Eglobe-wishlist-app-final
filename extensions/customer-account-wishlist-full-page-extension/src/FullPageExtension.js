@@ -131,11 +131,22 @@ import {
  
     const removeWishlistItem = async (productId, gridItem, variantId) => {
       if (!customerId || !shop) return;
+    
       try {
         const response = await fetch(`${appUrl}/api/getwishlist`, {
           method: "DELETE",
-          body: JSON.stringify({ customerId, productId, shop, variantId }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            customerId,
+            productId,
+            shop,
+            variantId,
+            action: "DELETE",
+          }),
         });
+    
         const result = await response.json();
         if (result.wishlist && result.wishlist.count > 0) {
           gridItem.remove();
