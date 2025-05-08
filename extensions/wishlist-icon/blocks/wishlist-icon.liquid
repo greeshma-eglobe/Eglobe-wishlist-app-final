@@ -22,6 +22,14 @@
 }
 {% endschema %}
 
+<div id="loginModal" class="login-modal">
+  <div class="login-modal-content">
+    <span class="wishlist-close">&times;</span>
+    <p>Please log in to add products to your wishlist.</p>
+    <a href="/account/login" class="wishlist-login-button">Log In</a>
+  </div>
+</div>
+
 <div class="wishlist-pdp">
   <button type="button" onclick="addToWishlist(this)">
     <svg
@@ -78,13 +86,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Pass the appUrl to the addToWishlist function when called
   window.addToWishlist = function (button) {
     let variantId = 'gid://shopify/ProductVariant/' + document.querySelector('[name="id"]')?.value || null;
 
     {% unless customer %}
-    alert('Please login to add to wishlist');
-    return;
+      showLoginModal(); 
+      return;
     {% endunless %}
 
     let wishlisted = button.dataset.wishlisted === "true";
@@ -113,8 +120,22 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch(console.error);
   }
+
+function showLoginModal() {
+  const modal = document.getElementById("loginModal");
+  const closeBtn = modal.querySelector(".wishlist-close");
+
+  modal.style.display = "block";
+
+  closeBtn.onclick = () => {
+    modal.style.display = "none";
+  };
+
+  window.onclick = (event) => {
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  };
+}
 });
 </script>
-
-
-

@@ -9,6 +9,14 @@
 }
 {% endschema %}
 
+<div id="loginModal" class="login-modal">
+  <div class="login-modal-content">
+    <span class="wishlist-close">&times;</span>
+    <p>Please log in to add products to your wishlist.</p>
+    <a href="/account/login" class="wishlist-login-button">Log In</a>
+  </div>
+</div>
+
 <script>
   window.addEventListener("load", function () {
     const appUrl = "https://eglobe-wishlist-app.onrender.com";
@@ -25,7 +33,7 @@
         productVariants["{{ product.id }}"] = "{{ product.variants.first.id }}";
       {% endfor %}
 
-      // Now loop through product titles
+      //loop through product titles
       productTitles.forEach((title) => {
         const idAttribute = title.id;
         const match = idAttribute.match(/-(\d+)$/);
@@ -66,6 +74,9 @@
     }
 
     function fetchWishlistStatus(productIds) {
+      if (!customerId) {
+    return;
+  }
       fetch(`${appUrl}/api/plpwishlist?customerId=${customerId}&shop=${shop}&productIds=${productIds.join(',')}`)
         .then(response => response.json())
         .then(result => {
@@ -92,6 +103,11 @@
       const isWishlisted = button.querySelector("svg").classList.contains("wishlisted");
       const action = isWishlisted ? "DELETE" : "CREATE";
 
+      if (!customerId) {
+    showLoginModal(); 
+    return;
+  }
+
       fetch(`${appUrl}/api/plpwishlist`, {
         method: "POST",
         body: JSON.stringify({
@@ -112,6 +128,23 @@
       })
       .catch(console.error);
     }
+
+    function showLoginModal() {
+  const modal = document.getElementById("loginModal");
+  const closeBtn = modal.querySelector(".wishlist-close");
+
+  modal.style.display = "block";
+
+  closeBtn.onclick = () => {
+    modal.style.display = "none";
+  };
+
+  window.onclick = (event) => {
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  };
+}
 
     addWishlistButtons();
   });
@@ -137,7 +170,7 @@
 <!-- Wishlist Modal -->
 <div id="wishlist-modal" class="wishlist-modal">
   <div class="wishlist-modal-content">
-    <span class="wishlist-close">&times;</span>
+    <span class="footer-wishlist-close">&times;</span>
     <h2>My Wishlist</h2>
     <div id="wishlist-items" class="wishlist-grid">
       <!-- Wishlist Products will be inserted here -->
@@ -154,7 +187,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     const wishlistFooter = document.getElementById('wishlist-footer');
     const wishlistModal = document.getElementById('wishlist-modal');
-    const wishlistClose = document.querySelector('.wishlist-close');
+    const wishlistClose = document.querySelector('.footer-wishlist-close');
     const wishlistContainer = document.getElementById('wishlist-items');
 
     const customerId = '{{ customer.id }}';
@@ -162,6 +195,10 @@
     const appUrl = 'https://eglobe-wishlist-app.onrender.com';
 
     wishlistFooter.addEventListener('click', function () {
+      if (!customerId) {
+        showLoginModal();
+        return;
+      }
       wishlistModal.style.display = 'block';
       loadWishlist();
     });
@@ -176,16 +213,29 @@
       }
     });
 
+    function showLoginModal() {
+      const modal = document.getElementById('loginModal');
+      const closeBtn = modal.querySelector('.wishlist-close');
+
+      modal.style.display = 'block';
+
+      closeBtn.onclick = () => {
+        modal.style.display = 'none';
+      };
+
+      window.onclick = (event) => {
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      };
+    }
+
     async function loadWishlist() {
       try {
-        const wishlistRes = await fetch(
-          `${appUrl}/api/getwishlist?customerId=${customerId}&shop=${shop}`
-        );
+        const wishlistRes = await fetch(`${appUrl}/api/getwishlist?customerId=${customerId}&shop=${shop}`);
         const wishlistData = await wishlistRes.json();
 
-        const tagRes = await fetch(
-          `${appUrl}/api/getProductTags?shop=${shop}`
-        );
+        const tagRes = await fetch(`${appUrl}/api/getProductTags?shop=${shop}`);
         const configuredTags = await tagRes.json();
         console.log(configuredTags);
 
@@ -212,9 +262,7 @@
         return;
       }
 
-      fetch(
-        `${appUrl}/api/getProductDetails?ids=${ids.join(',')}&shop=${shop}`
-      )
+      fetch(`${appUrl}/api/getProductDetails?ids=${ids.join(',')}&shop=${shop}`)
         .then((res) => res.json())
         .then((products) => {
           console.log('Grouped Products by Tags:', products);
@@ -257,6 +305,7 @@
 
         const groupHeading = document.createElement('h2');
         groupHeading.innerText = group === 'others' ? 'Others' : `Tag: ${group}`;
+
         wishlistContainer.appendChild(groupHeading);
 
         renderProduct(groupProducts);
@@ -371,8 +420,3 @@
     }
   });
 </script>
-
-
-
-
-
